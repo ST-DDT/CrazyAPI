@@ -17,10 +17,9 @@ public abstract class CrazyEvent extends Event
 		Bukkit.getPluginManager().callEvent(this);
 	}
 
-	@SuppressWarnings("deprecation")
 	protected void callEventAsynchronously(final Plugin plugin)
 	{
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new AsyncEventRunnable(this));
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new AsyncEventRunnable(this));
 	}
 
 	protected class AsyncEventRunnable implements Runnable

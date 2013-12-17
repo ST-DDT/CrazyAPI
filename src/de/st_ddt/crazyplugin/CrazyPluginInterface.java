@@ -9,11 +9,13 @@ import de.st_ddt.crazyplugin.commands.CrazyCommandTreeExecutorInterface;
 import de.st_ddt.crazyutil.ListFormat;
 import de.st_ddt.crazyutil.Logger;
 import de.st_ddt.crazyutil.locales.CrazyLocale;
+import de.st_ddt.crazyutil.locales.LocaleProvider;
+import de.st_ddt.crazyutil.reloadable.ReloadableProvider;
 
 /**
  * This object represents a CrazyPlugin.
  */
-public interface CrazyPluginInterface extends CrazyLightPluginInterface
+public interface CrazyPluginInterface extends CrazyLightPluginInterface, LocaleProvider, ReloadableProvider
 {
 
 	/**
@@ -28,6 +30,7 @@ public interface CrazyPluginInterface extends CrazyLightPluginInterface
 
 	public Logger getCrazyLogger();
 
+	@Override
 	public CrazyLocale getLocale();
 
 	public void load();
@@ -77,13 +80,13 @@ public interface CrazyPluginInterface extends CrazyLightPluginInterface
 	 * 
 	 * @param force
 	 *            Force checking for updates, if false this method does nothing if executed for the second time.
-	 * @return true, if an update is available, false otherwise .
+	 * @return True, if an update is available, False otherwise .
 	 */
 	public boolean checkForUpdate(boolean force);
 
 	/**
 	 * @return The latest version number available,<br>
-	 *         0 - if {@link #checkForUpdate(boolean force)} hasn't executed yet.<br>
+	 *         0 - if {@link #checkForUpdate(boolean force)} hasn't been executed yet.<br>
 	 *         null - if {@link #checkForUpdate(boolean force)} caused an error.
 	 */
 	public String getUpdateVersion();

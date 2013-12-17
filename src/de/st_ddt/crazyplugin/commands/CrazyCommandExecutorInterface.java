@@ -7,8 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
 import de.st_ddt.crazyplugin.exceptions.CrazyException;
+import de.st_ddt.crazyutil.RestrictedAccess;
 
-public interface CrazyCommandExecutorInterface extends TabExecutor
+public interface CrazyCommandExecutorInterface extends TabExecutor, RestrictedAccess
 {
 
 	@Override
@@ -21,6 +22,7 @@ public interface CrazyCommandExecutorInterface extends TabExecutor
 
 	public List<String> tab(CommandSender sender, String[] args);
 
+	@Override
 	public boolean hasAccessPermission(CommandSender sender);
 
 	public boolean isAccessible(CommandSender sender);
