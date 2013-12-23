@@ -129,7 +129,7 @@ public class ChatHelper
 		String res = message;
 		final int length = args.length;
 		for (int i = 0; i < length; i++)
-			res = StringUtils.replace(res, "$" + (i + start) + "$", args[i].toString());
+			res = StringUtils.replace(res, "{" + (i + start) + "}", args[i].toString());
 		return res;
 	}
 
@@ -138,7 +138,7 @@ public class ChatHelper
 		String res = message;
 		final int length = data.getParameterCount();
 		for (int i = 0; i < length; i++)
-			res = StringUtils.replace(res, "$" + i + "$", data.getParameter(sender, i));
+			res = StringUtils.replace(res, "{" + i + "}", data.getParameter(sender, i));
 		return res;
 	}
 
@@ -163,7 +163,7 @@ public class ChatHelper
 			res = ((CrazyLocale) message).getLanguageText(target);
 		final int length = args.length;
 		for (int i = 0; i < length; i++)
-			res = StringUtils.replace(res, "$" + (i + start) + "$", (args[i] instanceof CrazyLocale ? ((CrazyLocale) args[i]).getLanguageText(target) : args[i].toString()));
+			res = StringUtils.replace(res, "{" + (i + start) + "}", (args[i] instanceof CrazyLocale ? ((CrazyLocale) args[i]).getLanguageText(target) : args[i].toString()));
 		return res;
 	}
 
