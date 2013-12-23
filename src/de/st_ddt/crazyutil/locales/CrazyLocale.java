@@ -21,7 +21,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import de.st_ddt.crazyplugin.CrazyPluginInterface;
 import de.st_ddt.crazyutil.ChatHelper;
 
-public class CrazyLocale extends HashMap<String, CrazyLocale>
+public class CrazyLocale extends HashMap<String, CrazyLocale> implements PersonalizedMessage
 {
 
 	private static final long serialVersionUID = 7789788937594284997L;
@@ -260,6 +260,12 @@ public class CrazyLocale extends HashMap<String, CrazyLocale>
 	public Map<String, String> getLanguageTextMap()
 	{
 		return localeTexts;
+	}
+
+	@Override
+	public String getMessage(final CommandSender sender)
+	{
+		return getLanguageText(sender);
 	}
 
 	public String getLanguageText(final CommandSender sender)

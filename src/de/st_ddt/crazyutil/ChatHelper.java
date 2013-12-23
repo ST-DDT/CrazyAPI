@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.st_ddt.crazyplugin.data.ParameterData;
-import de.st_ddt.crazyutil.locales.CrazyLocale;
+import de.st_ddt.crazyutil.locales.PersonalizedMessage;
 
 public class ChatHelper
 {
@@ -119,52 +119,47 @@ public class ChatHelper
 				target.sendMessage(chatHeader + part);
 	}
 
-	public static String putArgs(final String message, final Object... args)
+	@SafeVarargs
+	public static <S> String putArgs(final String message, final S... args)
 	{
 		return putArgs(0, message, args);
 	}
 
-	public static String putArgs(final int start, final String message, final Object... args)
+	@SafeVarargs
+	public static <S> String putArgs(final int start, final String message, final S... args)
 	{
-		String res = message;
-		final int length = args.length;
-		for (int i = 0; i < length; i++)
-			res = StringUtils.replace(res, "{" + (i + start) + "}", args[i].toString());
-		return res;
+		return putArgsExtended(null, message, args);
 	}
 
-	public static String putArgsPara(final CommandSender sender, final String message, final ParameterData data)
+	public static String putArgsPara(final CommandSender target, final String message, final ParameterData data)
 	{
-		String res = message;
-		final int length = data.getParameterCount();
-		for (int i = 0; i < length; i++)
-			res = StringUtils.replace(res, "{" + i + "}", data.getParameter(sender, i));
-		return res;
+		return putArgsExtended(target, message, toList(data));
 	}
 
-	public static String[] putArgsPara(final CommandSender sender, final String[] args, final ParameterData data)
-	{
-		final int length = args.length;
-		final String[] res = new String[length];
-		for (int i = 0; i < length; i++)
-			res[i] = putArgsPara(sender, args[i], data);
-		return res;
-	}
-
-	public static String putArgsExtended(final CommandSender target, final Object message, final Object... args)
+	@SafeVarargs
+	public static <S> String putArgsExtended(final CommandSender target, final Object message, final S... args)
 	{
 		return putArgsExtended(0, target, message, args);
 	}
 
-	public static String putArgsExtended(final int start, final CommandSender target, final Object message, final Object... args)
+	@SafeVarargs
+	public static <S> String putArgsExtended(final int start, final CommandSender target, final Object message, final S... args)
 	{
 		String res = message.toString();
-		if (message instanceof CrazyLocale)
-			res = ((CrazyLocale) message).getLanguageText(target);
+		if (message instanceof PersonalizedMessage)
+			res = ((PersonalizedMessage) message).getMessage(target);
 		final int length = args.length;
 		for (int i = 0; i < length; i++)
-			res = StringUtils.replace(res, "{" + (i + start) + "}", (args[i] instanceof CrazyLocale ? ((CrazyLocale) args[i]).getLanguageText(target) : args[i].toString()));
+			res = StringUtils.replace(res, "{" + (i + start) + "}", getMessage(target, args[i]));
 		return res;
+	}
+
+	private static String getMessage(final CommandSender sender, final Object object)
+	{
+		if (sender == null || !(object instanceof PersonalizedMessage))
+			return String.valueOf(object.toString());
+		else
+			return ((PersonalizedMessage) object).getMessage(sender);
 	}
 
 	public static <S> String listingString(final S[] strings)
@@ -195,6 +190,41 @@ public class ChatHelper
 		for (int i = 0; i < count; i++)
 			res[i] = data.getParameter(sender, i);
 		return res;
+	}
+
+	public static PersonalizedMessage[] toList(final ParameterData data)
+	{
+		final int count = data.getParameterCount();
+		final PersonalizedMessage[] res = new PersonalizedMessage[count];
+		for (int i = 0; i < count; i++)
+			res[i] = new ParameterDataContainer(data, i);
+		return res;
+	}
+
+	private static class ParameterDataContainer implements PersonalizedMessage
+	{
+
+		private final ParameterData data;
+		private final int index;
+
+		public ParameterDataContainer(final ParameterData data, final int index)
+		{
+			super();
+			this.data = data;
+			this.index = index;
+		}
+
+		@Override
+		public String getMessage(final CommandSender sender)
+		{
+			return data.getParameter(sender, index);
+		}
+
+		@Override
+		public String toString()
+		{
+			return "PersonalizedMessage{from: " + data.toString() + ", index: " + index + "}";
+		}
 	}
 
 	public static String getMinecraftVersion()
