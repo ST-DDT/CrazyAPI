@@ -136,6 +136,16 @@ public class ChatHelper
 		return putArgsExtended(target, message, toList(data));
 	}
 
+	public static String[] putArgsPara(final CommandSender target, final String[] message, final ParameterData data)
+	{
+		final int length = message.length;
+		final String[] res = new String[length];
+		final PersonalizedMessage[] args = toList(data);
+		for (int i = 0; i < length; i++)
+			res[i] = putArgsExtended(target, message, args);
+		return res;
+	}
+
 	@SafeVarargs
 	public static <S> String putArgsExtended(final CommandSender target, final Object message, final S... args)
 	{
