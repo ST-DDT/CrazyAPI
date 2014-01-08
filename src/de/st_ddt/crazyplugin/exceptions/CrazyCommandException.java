@@ -18,7 +18,7 @@ public class CrazyCommandException extends CrazyException
 	}
 
 	@Override
-	@Localized("CRAZYEXCEPTION.COMMAND $Command$")
+	@Localized("CRAZYEXCEPTION.COMMAND {Command}")
 	public void print(final CommandSender sender, final String header)
 	{
 		if (command == null)
