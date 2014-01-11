@@ -18,7 +18,15 @@ public abstract class PreSetList implements Named
 	{
 		super();
 		this.name = name;
+		// TODO remove this from here
+		register();
+	}
+
+	public void register(final String... aliases)
+	{
 		PRESETLISTS.put(name, this);
+		for (final String alias : aliases)
+			PRESETLISTS.put(alias, this);
 	}
 
 	@Override
@@ -42,7 +50,7 @@ public abstract class PreSetList implements Named
 					list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("offline_ops")
 		{
 
@@ -54,7 +62,7 @@ public abstract class PreSetList implements Named
 					list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("all_ops")
 		{
 
@@ -66,7 +74,7 @@ public abstract class PreSetList implements Named
 					list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("not_ops")
 		{
 
@@ -79,7 +87,7 @@ public abstract class PreSetList implements Named
 						list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("online_players")
 		{
 
@@ -91,7 +99,7 @@ public abstract class PreSetList implements Named
 					list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("offline_players")
 		{
 
@@ -104,7 +112,7 @@ public abstract class PreSetList implements Named
 						list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("all_players")
 		{
 
@@ -116,7 +124,7 @@ public abstract class PreSetList implements Named
 					list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("online_whitelisted")
 		{
 
@@ -129,7 +137,7 @@ public abstract class PreSetList implements Named
 						list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("offline_whitelisted")
 		{
 
@@ -142,7 +150,7 @@ public abstract class PreSetList implements Named
 						list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("all_whitelisted")
 		{
 
@@ -154,7 +162,7 @@ public abstract class PreSetList implements Named
 					list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("not_whitelisted")
 		{
 
@@ -167,7 +175,7 @@ public abstract class PreSetList implements Named
 						list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("banned")
 		{
 
@@ -179,7 +187,7 @@ public abstract class PreSetList implements Named
 					list.add(player.getName());
 				return list;
 			}
-		};
+		}.register();
 		new PreSetList("banned-ips")
 		{
 
@@ -188,6 +196,6 @@ public abstract class PreSetList implements Named
 			{
 				return new ArrayList<String>(Bukkit.getIPBans());
 			}
-		};
+		}.register();
 	}
 }
