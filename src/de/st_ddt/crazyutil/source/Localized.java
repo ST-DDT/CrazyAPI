@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * This method uses multiligual messages defined by the listed paths.<br>
- * Each entry looks like this "PATH.$PathVar$.PATH $Var1$ $Var2$ ..."
+ * Each entry looks like this "PATH.{PathVar}.PATH {Var1} {Var2} ..."
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.METHOD, ElementType.CONSTRUCTOR })

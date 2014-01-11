@@ -1,41 +1,24 @@
 package de.st_ddt.crazyutil.conditions;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.TreeMap;
 
-import de.st_ddt.crazyutil.ConfigurationSaveable;
-import de.st_ddt.crazyutil.conditions.checker.ConditionChecker;
+import org.bukkit.configuration.ConfigurationSection;
 
-/**
- * A condition to check certain conditions at runtime.
- */
-public interface Condition extends ConfigurationSaveable
+public interface Condition
 {
 
-	public final static Map<String, Class<? extends Condition>> CONDITIONCLASSES = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+	public Condition secure(Map<Integer, ? extends Collection<Class<?>>> classes);
+
+	public boolean check(Map<Integer, ? extends Object> parameters);
 
 	/**
-	 * @return The type of this Condition.<br>
-	 *         Required to reloading it after server restart.
-	 */
-	public String getType();
-
-	/**
-	 * This method checks whether this and any possible sub conditions are applicable for the given check.<br>
-	 * This method should be executed after loading the entire condition tree.
+	 * Saves this object to config.
 	 * 
-	 * @param clazz
-	 *            The class that should be checked, whether it can be used to execute the test.
-	 * @return True, if given class can execute the test properly.
+	 * @param config
+	 *            The config this object should be saved too.
+	 * @param path
+	 *            The path within this config where this object should be saved. (Should end with "." in most cases)
 	 */
-	public boolean isApplicable(Class<? extends ConditionChecker> clazz);
-
-	/**
-	 * Checks whether the given property matches this condition.
-	 * 
-	 * @param checker
-	 *            The property that should be checked.
-	 * @return True, if the given property matches this condition.
-	 */
-	public boolean check(ConditionChecker checker);
+	public void save(ConfigurationSection config, String path, Map<Integer, String> parameterNames);
 }

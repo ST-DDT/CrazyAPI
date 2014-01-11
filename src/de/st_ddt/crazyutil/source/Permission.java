@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * This method uses the following permissions.<br>
- * Each entry looks like this "permission.$PermissionVar$.permission"
+ * Each entry looks like this "permission.{PermissionVar}.permission"
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.METHOD })

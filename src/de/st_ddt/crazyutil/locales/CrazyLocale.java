@@ -21,7 +21,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import de.st_ddt.crazyplugin.CrazyPluginInterface;
 import de.st_ddt.crazyutil.ChatHelper;
 
-public class CrazyLocale extends HashMap<String, CrazyLocale>
+public class CrazyLocale extends HashMap<String, CrazyLocale> implements PersonalizedMessage
 {
 
 	private static final long serialVersionUID = 7789788937594284997L;
@@ -29,6 +29,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale>
 	private final static Pattern PATTERN_DOT = Pattern.compile("\\.");
 	private final static Pattern PATTERN_UNDERSCORE = Pattern.compile("_");
 	private final static Pattern PATTERN_EQUALSIGN = Pattern.compile("=");
+	private final static Pattern PATTERN_OLD = Pattern.compile("\\$([0-9]+)\\$");
 	private final static CrazyLocale locale = getCrazyLocaleHead();
 	private final static CrazyLocale missing = getCrazyLocaleMissing();
 	private final static Map<String, String> userLanguages = new HashMap<String, String>();
@@ -53,11 +54,11 @@ public class CrazyLocale extends HashMap<String, CrazyLocale>
 	static
 	{
 		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN", "CRAZYPLUGIN");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.UPDATED", "$0$ has been updated. Updating language files.");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.READ", "Failed reading $0$ language files!");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.EXTRACT", "Failed exporting $0$ language files!");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.AVAILABLE", "$0$ language files not available!");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.DATABASE.LOADED", "Loaded $0$ entries from database!");
+		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.UPDATED", "{0} has been updated. Updating language files.");
+		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.READ", "Failed reading {0} language files!");
+		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.EXTRACT", "Failed exporting {0} language files!");
+		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.AVAILABLE", "{0} language files not available!");
+		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.DATABASE.LOADED", "Loaded {0} entries from database!");
 		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.DATABASE.ACCESSWARN", "&CWARNING! Cannot access Database!");
 		getLocaleHead().addLanguageEntry("en_en", "LANGUAGE.NAME", "English");
 	}
@@ -262,6 +263,12 @@ public class CrazyLocale extends HashMap<String, CrazyLocale>
 		return localeTexts;
 	}
 
+	@Override
+	public String getMessage(final CommandSender sender)
+	{
+		return getLanguageText(sender);
+	}
+
 	public String getLanguageText(final CommandSender sender)
 	{
 		return getLanguageText(getUserLanguage(sender));
@@ -411,7 +418,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale>
 	public CrazyLocale addLanguageEntry(final String language, final String path, final String entry)
 	{
 		final CrazyLocale locale = getSecureLanguageEntry(path);
-		locale.setLanguageText(language, ChatHelper.colorise(entry));
+		locale.setLanguageText(language, PATTERN_OLD.matcher(ChatHelper.colorise(entry)).replaceAll("\\{$1\\}"));
 		return locale;
 	}
 
