@@ -5,7 +5,7 @@
 		<maven>2.2.1</maven>
 	</prerequisites>
 	<groupId>de.st_ddt.crazy</groupId>
-	<artifactId>Crazy_API</artifactId>
+	<artifactId>CrazyAPI</artifactId>
 	<version>10.8</version>
 
 	<name>CrazyAPI</name>
