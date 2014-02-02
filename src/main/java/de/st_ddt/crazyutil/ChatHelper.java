@@ -3,7 +3,6 @@ package de.st_ddt.crazyutil;
 import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -235,16 +234,6 @@ public class ChatHelper
 		{
 			return "PersonalizedMessage{from: " + data.toString() + ", index: " + index + "}";
 		}
-	}
-
-	public static String getMinecraftVersion()
-	{
-		return Bukkit.getBukkitVersion().split("-", 2)[0];
-	}
-
-	public static String getExtendedMinecraftVersion()
-	{
-		return Bukkit.getBukkitVersion().replace("-R", ".").split("-", 2)[0];
 	}
 
 	public static void shortPrintStackTrace(final Throwable main, final Throwable throwable, final Object cause)
