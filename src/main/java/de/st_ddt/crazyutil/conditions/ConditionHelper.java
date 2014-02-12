@@ -77,7 +77,7 @@ public class ConditionHelper
 		return res;
 	}
 
-	private ConditionHelper()
+	protected ConditionHelper()
 	{
 	}
 }
