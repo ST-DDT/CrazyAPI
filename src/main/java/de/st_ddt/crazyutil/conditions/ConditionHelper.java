@@ -41,12 +41,23 @@ public class ConditionHelper
 		}
 	}
 
+	public static Condition fastLoad(final ConfigurationSection config, final String... parameterNames) throws Exception
+	{
+		return load(config, fastParameterIndexes(parameterNames));
+	}
+
 	public static Map<String, Integer> fastParameterIndexes(final String... parameterNames)
 	{
 		final Map<String, Integer> res = new HashMap<>(parameterNames.length);
 		for (int i = 0; i < parameterNames.length; i++)
 			res.put(parameterNames[i], i);
 		return res;
+	}
+
+	public static void fastSave(final Condition condition, final ConfigurationSection config, final String path, final String... parameterNames)
+	{
+		if (condition != null)
+			condition.save(config, path, fastParameterNames(parameterNames));
 	}
 
 	public static Map<Integer, String> fastParameterNames(final String... parameterNames)
