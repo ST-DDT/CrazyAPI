@@ -41,12 +41,12 @@ public class ConditionHelper
 		}
 	}
 
-	public static Condition fastLoad(final ConfigurationSection config, final String... parameterNames) throws Exception
+	public static Condition simpleLoad(final ConfigurationSection config, final String... parameterNames) throws Exception
 	{
-		return load(config, fastParameterIndexes(parameterNames));
+		return load(config, simpleParameterIndexes(parameterNames));
 	}
 
-	public static Map<String, Integer> fastParameterIndexes(final String... parameterNames)
+	public static Map<String, Integer> simpleParameterIndexes(final String... parameterNames)
 	{
 		final Map<String, Integer> res = new HashMap<>(parameterNames.length);
 		for (int i = 0; i < parameterNames.length; i++)
@@ -54,13 +54,13 @@ public class ConditionHelper
 		return res;
 	}
 
-	public static void fastSave(final Condition condition, final ConfigurationSection config, final String path, final String... parameterNames)
+	public static void simpleSave(final Condition condition, final ConfigurationSection config, final String path, final String... parameterNames)
 	{
 		if (condition != null)
-			condition.save(config, path, fastParameterNames(parameterNames));
+			condition.save(config, path, simpleParameterNames(parameterNames));
 	}
 
-	public static Map<Integer, String> fastParameterNames(final String... parameterNames)
+	public static Map<Integer, String> simpleParameterNames(final String... parameterNames)
 	{
 		final Map<Integer, String> res = new HashMap<>(parameterNames.length);
 		for (int i = 0; i < parameterNames.length; i++)
@@ -68,7 +68,7 @@ public class ConditionHelper
 		return res;
 	}
 
-	public static Map<Integer, Set<Class<?>>> fastParameterClasses(final Class<?>... classes)
+	public static Map<Integer, Set<Class<?>>> simpleParameterClasses(final Class<?>... classes)
 	{
 		final Map<Integer, Set<Class<?>>> res = new HashMap<>(classes.length);
 		for (int i = 0; i < classes.length; i++)
@@ -80,7 +80,12 @@ public class ConditionHelper
 		return res;
 	}
 
-	public static Map<Integer, Object> fastParameters(final Object... objects)
+	public static boolean simpleCheck(final Condition condition, final Object... objects)
+	{
+		return condition.check(simpleParameters(objects));
+	}
+
+	public static Map<Integer, Object> simpleParameters(final Object... objects)
 	{
 		final Map<Integer, Object> res = new HashMap<>(objects.length);
 		for (int i = 0; i < objects.length; i++)
