@@ -9,7 +9,7 @@ import de.st_ddt.crazyutil.source.Localized;
 public interface ListFormat
 {
 
-	// @ // Localized("PATH {CurrentPage} {MaxPage} {ChatHeader} {DateTime} $CustomArgs...$")
+	// @ // Localized("PATH {CurrentPage} {MaxPage} {ChatHeader} {DateTime} {CustomArgs...}")
 	/**
 	 * Used in {@link CrazyPages#show(CommandSender) CrazyPages} as message head. </br> {0} = current Page </br> {1} = max Page </br> {2} = chatHeader </br> {3} = current date
 	 * 
@@ -43,7 +43,7 @@ public interface ListFormat
 	{
 
 		@Override
-		@Localized("CRAZYPLUGIN.LIST.HEADER {CurrentPage} {MaxPage} {ChatHeader} {DateTime} $CustomArgs...$")
+		@Localized("CRAZYPLUGIN.LIST.HEADER {CurrentPage} {MaxPage} {ChatHeader} {DateTime} {CustomArgs...}")
 		public String headFormat(final CommandSender sender)
 		{
 			return CrazyLocale.getLocaleHead().getLanguageEntry("CRAZYPLUGIN.LIST.HEADER").getLanguageText(sender);
