@@ -4,6 +4,12 @@ import de.st_ddt.crazyutil.Named;
 
 public interface DatabaseEntry extends Named
 {
-	// public ConfigurationDatabaseEntry(Object[] rawData);
-	// public void saveToDatabase();
+
+	public Database<?> getDatabase();
+
+	public boolean reload();
+
+	public void flush();
+
+	public void delete();
 }

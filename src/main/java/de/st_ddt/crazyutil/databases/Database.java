@@ -4,13 +4,13 @@ import java.util.Collection;
 
 import de.st_ddt.crazyutil.ConfigurationSaveable;
 
-public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
+public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable, Iterable<S>
 {
 
 	/**
-	 * @return Returns the database type of this Database
+	 * @return The type of the database.
 	 */
-	public DatabaseType getType();
+	public String getDatabaseType();
 
 	public Class<S> getEntryClazz();
 
@@ -19,23 +19,7 @@ public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
 	 */
 	public void initialize() throws Exception;
 
-	/**
-	 * This will be executed during initialization of databases. Exmaple: Check if columns exist.
-	 * 
-	 * @throws Exception
-	 *             If something went wrong.
-	 */
-	public void checkTable() throws Exception;
-
-	/**
-	 * @return If elements are loaded/added from source while server is running.
-	 */
-	public boolean isStaticDatabase();
-
-	/**
-	 * @return Whether all elements are loaded on startup. This can only be false, if isStaticDatabase() is false.
-	 */
-	public boolean isCachedDatabase();
+	public S createEntry(String entry);
 
 	/**
 	 * Checks whether data exists for key. If database isn't static, this method must load data if they exist.
@@ -56,15 +40,6 @@ public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
 	public S getEntry(String key);
 
 	/**
-	 * Returns the data belonging to key, returns null if no data exists, if data isn't loaded it will be loaded automatically. (This does not load the entry, if this is a static database)
-	 * 
-	 * @param key
-	 *            The key used to get the data.
-	 * @return The data belonging to key.
-	 */
-	public S getOrLoadEntry(String key);
-
-	/**
 	 * @return The Lock making this database thread safe!
 	 */
 	public Object getDatabaseLock();
@@ -74,7 +49,7 @@ public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
 	 * 
 	 * @return The collection containing all loaded data.
 	 */
-	public Collection<S> getAllEntries();
+	public Collection<? extends S> getAllEntries();
 
 	/**
 	 * Get the amount of stored entries. (It contains only loaded datas)
@@ -82,15 +57,6 @@ public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
 	 * @return The amount of stored entries.
 	 */
 	public int size();
-
-	/**
-	 * Loads the data belonging to key from data source, if this a none static database. This will overwrite existing data objects already stored in the cache. You have to update all references to data belonging to this key. (Otherwise you risk data inconsistency)
-	 * 
-	 * @param key
-	 *            The key belonging to the data which should be loaded.
-	 * @return The current data, eigther loaded or just the current one.
-	 */
-	public S updateEntry(String key);
 
 	/**
 	 * Loads the data belonging to key from data source. This will overwrite existing data objects already stored in the cache. You have to update all references to data belonging to this key. (Otherwise you risk data inconsistency)
@@ -116,17 +82,18 @@ public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
 	public boolean unloadEntry(String key);
 
 	/**
+	 * Unloads the data belonging to key from cache. Entry will be saved before been unloaded.<br>
+	 * Do not modify entry after that.
+	 * 
+	 * @param entry
+	 *            The entry which should be unloaded.
+	 */
+	public void unloadEntry(S entry);
+
+	/**
 	 * Unloads all data from cache. Entries will be saved before been unloaded.
 	 */
 	public void unloadAllEntries();
-
-	/**
-	 * Saves the entry belonging to key to database. It won't create an new entry, if it does not exist.
-	 * 
-	 * @param key
-	 *            The key used to find the data which should be saved.
-	 */
-	public void save(String key);
 
 	/**
 	 * Saves the selected entry to database. It will create an new entry if it does not exist.
@@ -134,14 +101,14 @@ public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
 	 * @param entry
 	 *            The entry which should be saved.
 	 */
-	public void save(S entry);
+	public S insert(S entry);
 
 	/**
 	 * Save all elements of this collection to database. All entries will be created, if they do not exist.
 	 * 
 	 * @param entries
 	 */
-	public void saveAll(Collection<S> entries);
+	public Collection<? extends S> insertAll(Collection<? extends S> entries);
 
 	/**
 	 * Deletes an entry from database and from cache. All references to the deleted data are still valid. This also deletes the data for never loaded entries. This method may save the database.
@@ -153,12 +120,9 @@ public interface Database<S extends DatabaseEntry> extends ConfigurationSaveable
 	public boolean deleteEntry(String key);
 
 	/**
-	 * Deletes all entries from database. The database will be saved after that.
+	 * Deletes all entries from database. Loaded and unloaded ones.
 	 */
 	public void purgeDatabase();
-
-	/**
-	 * Saves this database. (Some databases will be saved automatically when datas are changed)
-	 */
-	public void saveDatabase();
+	
+	public void shutdown();
 }
