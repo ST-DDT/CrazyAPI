@@ -5,8 +5,6 @@ import de.st_ddt.crazyutil.Named;
 public interface DatabaseEntry extends Named
 {
 
-	public Database<?> getDatabase();
-
 	public boolean reload();
 
 	public void flush();
