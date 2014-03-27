@@ -84,16 +84,16 @@ public class ChatHelper
 			return ChatColor.stripColor(ChatHelper.colorise(string));
 	}
 
-	public static void consoleLog(final Plugin plugin, final boolean error, final String message, final String args)
+	public static void consoleLog(final Plugin plugin, final boolean error, final String message, final Object... args)
 	{
 		final ConsoleCommandSender console = Bukkit.getConsoleSender();
 		final String chatHeader = getChatHeader(plugin);
 		final String msg = ChatHelper.putArgs(message, args);
 		if (console == null)
 			if (error)
-				System.err.println(chatHeader + stripColor(msg));
+				System.err.println(stripColor(chatHeader + msg));
 			else
-				System.out.println(chatHeader + stripColor(msg));
+				System.out.println(stripColor(chatHeader + msg));
 		else if (error)
 			console.sendMessage(chatHeader + ChatColor.DARK_RED + msg);
 		else
