@@ -3,9 +3,12 @@ package de.st_ddt.crazyutil;
 import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import de.st_ddt.crazyplugin.data.ParameterData;
 import de.st_ddt.crazyutil.locales.PersonalizedMessage;
@@ -63,6 +66,48 @@ public class ChatHelper
 				b[i + 1] = Character.toUpperCase(b[i + 1]);
 			}
 		return new String(b);
+	}
+
+	/**
+	 * Removes all colors tags from the string.<br>
+	 * This method also replaces textual representation of color codes. (Ex: &1)
+	 * 
+	 * @param string
+	 *            The string where all color codes should be removed.
+	 * @return The string without color codes.
+	 */
+	public static String stripColor(final String string)
+	{
+		if (string == null)
+			return null;
+		else
+			return ChatColor.stripColor(ChatHelper.colorise(string));
+	}
+
+	public static void consoleLog(final Plugin plugin, final boolean error, final String message, final String args)
+	{
+		final ConsoleCommandSender console = Bukkit.getConsoleSender();
+		final String chatHeader = getChatHeader(plugin);
+		final String msg = ChatHelper.putArgs(message, args);
+		if (console == null)
+			if (error)
+				System.err.println(chatHeader + stripColor(msg));
+			else
+				System.out.println(chatHeader + stripColor(msg));
+		else if (error)
+			console.sendMessage(chatHeader + ChatColor.DARK_RED + msg);
+		else
+			console.sendMessage(chatHeader + ChatColor.WHITE + msg);
+	}
+
+	public static String getChatHeader(final Plugin plugin)
+	{
+		if (plugin == null)
+			return "";
+		else if (plugin instanceof ChatHeaderProvider)
+			return ((ChatHeaderProvider) plugin).getChatHeader();
+		else
+			return "[" + plugin.getName() + "] ";
 	}
 
 	public static void sendMessage(final CommandSender target, final Object message, final Object... args)
