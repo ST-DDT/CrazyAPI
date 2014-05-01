@@ -11,6 +11,10 @@ public interface ChatHeaderProvider
 {
 
 	/**
+	 * Used to format Dates to a readable String <b>yyyyMMddHHmmss</b>
+	 */
+	public static DateFormat SHORTDATETIMEFORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+	/**
 	 * Used to format Dates to a readable String <b>yyyy-MM-dd HH:mm:ss</b>
 	 */
 	public static DateFormat DATETIMEFORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
