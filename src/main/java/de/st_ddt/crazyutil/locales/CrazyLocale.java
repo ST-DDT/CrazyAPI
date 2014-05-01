@@ -1,7 +1,11 @@
 package de.st_ddt.crazyutil.locales;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +30,9 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 {
 
 	private static final long serialVersionUID = 7789788937594284997L;
-	public final static Pattern PATTERN_LANGUAGE = Pattern.compile("[a-z]{2,3}_[a-z]{2,3}", Pattern.CASE_INSENSITIVE);
+	public final static String FALLBACKLANGUAGE = "en_GB";
+	private final static Pattern PATTERN_LANGUAGE = Pattern.compile("([a-z]{2})_([A-Z]{2})");
+	private final static Pattern PATTERN_LANGUAGE_CASE_INSENSITIVE = Pattern.compile(PATTERN_LANGUAGE.pattern(), Pattern.CASE_INSENSITIVE);
 	private final static Pattern PATTERN_DOT = Pattern.compile("\\.");
 	private final static Pattern PATTERN_UNDERSCORE = Pattern.compile("_");
 	private final static Pattern PATTERN_EQUALSIGN = Pattern.compile("=");
@@ -53,14 +60,32 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 
 	static
 	{
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN", "CRAZYPLUGIN");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.UPDATED", "{0} has been updated. Updating language files.");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.READ", "Failed reading {0} language files!");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.EXTRACT", "Failed exporting {0} language files!");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.LANGUAGE.ERROR.AVAILABLE", "{0} language files not available!");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.DATABASE.LOADED", "Loaded {0} entries from database!");
-		getLocaleHead().addLanguageEntry("en_en", "CRAZYPLUGIN.DATABASE.ACCESSWARN", "&CWARNING! Cannot access Database!");
-		getLocaleHead().addLanguageEntry("en_en", "LANGUAGE.NAME", "English");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "CRAZYPLUGIN", "CRAZYPLUGIN");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "CRAZYPLUGIN.UPDATED", "{0} has been updated. Updating language files.");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "CRAZYPLUGIN.LANGUAGE.ERROR.READ", "Failed reading {0} language files!");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "CRAZYPLUGIN.LANGUAGE.ERROR.EXTRACT", "Failed exporting {0} language files!");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "CRAZYPLUGIN.LANGUAGE.ERROR.AVAILABLE", "{0} language files not available!");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "CRAZYPLUGIN.DATABASE.LOADED", "Loaded {0} entries from database!");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "CRAZYPLUGIN.DATABASE.ACCESSWARN", "&CWARNING! Cannot access Database!");
+		getLocaleHead().addLanguageEntry(FALLBACKLANGUAGE, "LANGUAGE.NAME", "English");
+	}
+
+	public static String fixLanguage(final String language)
+	{
+		return fixLanguage(language, null);
+	}
+
+	public static String fixLanguage(String language, final String defaultLanguage)
+	{
+		if (language.startsWith("custom_"))
+			language = defaultLanguage.substring(7);
+		if (language.endsWith(".lang"))
+			language = language.substring(0, language.length() - 5);
+		final Matcher matcher = PATTERN_LANGUAGE_CASE_INSENSITIVE.matcher(language);
+		if (!matcher.matches())
+			return defaultLanguage;
+		else
+			return matcher.group(1).toLowerCase() + "_" + matcher.group(2).toLowerCase();
 	}
 
 	public static String getDefaultLanguage()
@@ -68,9 +93,9 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 		return defaultLanguage;
 	}
 
-	public static void setDefaultLanguage(final String defaultLanguage)
+	public static void setDefaultLanguage(final String language)
 	{
-		CrazyLocale.defaultLanguage = defaultLanguage;
+		CrazyLocale.defaultLanguage = fixLanguage(language, FALLBACKLANGUAGE);
 	}
 
 	public final static CrazyLocale getPluginHead(final CrazyPluginInterface plugin)
@@ -165,7 +190,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 
 	public static Set<String> getLanguageAlternatives(final String language)
 	{
-		final String[] split = PATTERN_UNDERSCORE.split(language);
+		final String[] split = PATTERN_UNDERSCORE.split(language.toLowerCase());
 		final Set<String> res = new HashSet<String>();
 		final Collection<String> temp = languageAlternatives.get(split[0]);
 		if (temp != null)
@@ -199,14 +224,14 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 	private static CrazyLocale getCrazyLocaleHead()
 	{
 		final CrazyLocale head = new CrazyLocale(null, "_HEAD_");
-		head.setLanguageText("en_en", "This Entry is the root!");
+		head.setLanguageText(FALLBACKLANGUAGE, "This Entry is the root!");
 		return head;
 	}
 
 	private static CrazyLocale getCrazyLocaleMissing()
 	{
 		final CrazyLocale missing = new CrazyLocale(null, "_MISSING_");
-		missing.setLanguageText("en_en", "This Language-Entry is missing!");
+		missing.setLanguageText(FALLBACKLANGUAGE, "This Language-Entry is missing!");
 		return missing;
 	}
 
@@ -314,7 +339,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 		String res = localeTexts.get(defaultLanguage);
 		if (res == null)
 		{
-			res = localeTexts.get("en_en");
+			res = localeTexts.get(FALLBACKLANGUAGE);
 			if (res == null)
 				if (localeTexts.isEmpty())
 					return null;
@@ -422,59 +447,49 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 		return locale;
 	}
 
-	public static void readFile(final String language, final Reader reader) throws IOException
+	public static void readFile(final String language, final File file) throws IOException
 	{
-		BufferedReader bufreader = null;
-		read: try
+		try (InputStream stream = new FileInputStream(file);
+				InputStreamReader reader = new InputStreamReader(stream, "UTF-8"))
 		{
-			bufreader = new BufferedReader(reader);
-			String zeile = bufreader.readLine();
+			readFile(language, reader);
+		}
+	}
+
+	public static void readFile(final String language, final Reader in) throws IOException
+	{
+		final String lang = fixLanguage(language);
+		if (lang == null)
+			throw new IllegalArgumentException("Language " + language + " is not valid!");
+		try (BufferedReader reader = new BufferedReader(in))
+		{
+			String zeile = reader.readLine();
 			if (zeile == null)
-				break read;
-			try
-			{
-				// Remove UTF-8 BOM (Windows, Linux)
-				if (zeile.getBytes()[0] == (byte) 63)
+				return;
+			// Remove UTF-8 BOM (Windows, Linux)
+			final byte[] bytes = zeile.getBytes();
+			if (bytes.length > 1)
+				if (bytes[0] == (byte) 63)
 					zeile = zeile.substring(1);
-				else if (zeile.getBytes()[0] == (byte) 239)
-					if (zeile.getBytes()[1] == (byte) 187)
-						if (zeile.getBytes()[2] == (byte) 191)
-							zeile = zeile.substring(3);
-			}
-			catch (final IndexOutOfBoundsException e)
-			{}
+				else if (bytes.length > 3)
+					if (bytes[0] == (byte) 239 && bytes[1] == (byte) 187 && bytes[2] == (byte) 191)
+						zeile = zeile.substring(3);
 			String[] split = null;
-			if (zeile.length() > 1 && !zeile.startsWith("#"))
+			do
 			{
-				split = PATTERN_EQUALSIGN.split(zeile, 2);
-				try
-				{
-					locale.addLanguageEntry(language, split[0], split[1]);
-				}
-				catch (final ArrayIndexOutOfBoundsException e)
-				{
-					System.err.println("Invalid language entry/line \"" + zeile + "\" for language: " + language);
-				}
-			}
-			while ((zeile = bufreader.readLine()) != null)
-			{
-				if (zeile.length() <= 1 || zeile.startsWith("#"))
+				if (zeile.length() > 1 || zeile.startsWith("#"))
 					continue;
 				split = PATTERN_EQUALSIGN.split(zeile, 2);
 				try
 				{
-					locale.addLanguageEntry(language, split[0], split[1]);
+					locale.addLanguageEntry(lang, split[0], split[1]);
 				}
 				catch (final ArrayIndexOutOfBoundsException e)
 				{
-					System.err.println("Invalid language entry/line \"" + zeile + "\" for language: " + language);
+					System.err.println("Invalid language entry/line \"" + zeile + "\" for language: " + lang);
 				}
 			}
-		}
-		finally
-		{
-			if (bufreader != null)
-				bufreader.close();
+			while ((zeile = reader.readLine()) != null);
 		}
 	}
 
@@ -554,7 +569,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 				return;
 			try
 			{
-				for (final String part : PATTERN_UNDERSCORE.split(language))
+				for (final String part : PATTERN_UNDERSCORE.split(language.toLowerCase()))
 				{
 					if (!languageAlternatives.containsKey(part))
 						languageAlternatives.put(part, new HashSet<String>());
@@ -571,20 +586,27 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 		return languages;
 	}
 
-	public static void save(final ConfigurationSection config, final String path)
+	public static String getSystemLanguage()
+	{
+		final String systemLanguage = System.getProperty("user.language").toLowerCase();
+		final String systemCountry = System.getProperty("user.country", systemLanguage).toUpperCase();
+		return systemLanguage + "_" + systemCountry;
+	}
+
+	public static void saveUserLanguages(final ConfigurationSection config, final String path)
 	{
 		for (final java.util.Map.Entry<String, String> user : userLanguages.entrySet())
 			config.set(path + user.getKey(), user.getValue());
 	}
 
-	public static Set<String> load(final ConfigurationSection config)
+	public static Set<String> loadUserLanguages(final ConfigurationSection config)
 	{
-		final HashSet<String> languages = new HashSet<String>();
+		final Set<String> languages = new HashSet<String>();
 		if (config == null)
 			return languages;
 		for (final String name : config.getKeys(false))
 		{
-			final String language = config.getString(name);
+			final String language = fixLanguage(config.getString(name));
 			setUserLanguage(name, language);
 			languages.add(language);
 		}
