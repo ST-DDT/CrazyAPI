@@ -146,7 +146,7 @@ public class ChatHelper
 
 	public static void sendFinalMessage(final CommandSender target, final String message)
 	{
-		if (message.equals(""))
+		if (message == null || message.isEmpty())
 			return;
 		for (final String part : StringUtils.splitByWholeSeparator(message, "\\n"))
 			target.sendMessage(part);
@@ -154,7 +154,7 @@ public class ChatHelper
 
 	public static void sendFinalMessage(final CommandSender target, final String chatHeader, final String message)
 	{
-		if (message.equals(""))
+		if (message == null || message.isEmpty())
 			return;
 		if (!showChatHeaders && target instanceof Player)
 			sendFinalMessage(target, message);
@@ -172,7 +172,7 @@ public class ChatHelper
 	@SafeVarargs
 	public static <S> String putArgs(final int start, final String message, final S... args)
 	{
-		return putArgsExtended(null, message, args);
+		return putArgsExtended(start, null, message, args);
 	}
 
 	public static String putArgsPara(final CommandSender target, final String message, final ParameterData data)
@@ -186,7 +186,7 @@ public class ChatHelper
 		final String[] res = new String[length];
 		final PersonalizedMessage[] args = toList(data);
 		for (int i = 0; i < length; i++)
-			res[i] = putArgsExtended(target, message, args);
+			res[i] = putArgsExtended(target, message[i], args);
 		return res;
 	}
 
@@ -199,21 +199,31 @@ public class ChatHelper
 	@SafeVarargs
 	public static <S> String putArgsExtended(final int start, final CommandSender target, final Object message, final S... args)
 	{
-		String res = message.toString();
+		String res = getMessage(target, message);
 		if (message instanceof PersonalizedMessage)
 			res = ((PersonalizedMessage) message).getMessage(target);
+		else
+			res = message.toString();
 		final int length = args.length;
 		for (int i = 0; i < length; i++)
 			res = StringUtils.replace(res, "{" + (i + start) + "}", getMessage(target, args[i]));
 		return res;
 	}
 
-	private static String getMessage(final CommandSender sender, final Object object)
+	private static String getMessage(final CommandSender target, final Object object)
 	{
-		if (sender == null || !(object instanceof PersonalizedMessage))
-			return String.valueOf(object.toString());
+		if (object == null)
+			return "null";
+		else if (object instanceof PersonalizedMessage)
+		{
+			final PersonalizedMessage message = (PersonalizedMessage) object;
+			if (target == null)
+				return message.getMessage(Bukkit.getConsoleSender());
+			else
+				return message.getMessage(target);
+		}
 		else
-			return ((PersonalizedMessage) object).getMessage(sender);
+			return object.toString();
 	}
 
 	public static <S> String listingString(final S[] strings)
