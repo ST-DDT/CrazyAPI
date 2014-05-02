@@ -77,6 +77,8 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 
 	public static String fixLanguage(String language, final String defaultLanguage)
 	{
+		if (language == null)
+			return defaultLanguage;
 		if (language.startsWith("custom_"))
 			language = defaultLanguage.substring(7);
 		if (language.endsWith(".lang"))
@@ -85,7 +87,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 		if (!matcher.matches())
 			return defaultLanguage;
 		else
-			return matcher.group(1).toLowerCase() + "_" + matcher.group(2).toLowerCase();
+			return matcher.group(1).toLowerCase() + "_" + matcher.group(2).toUpperCase();
 	}
 
 	public static String getDefaultLanguage()
@@ -477,7 +479,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 			String[] split = null;
 			do
 			{
-				if (zeile.length() > 1 || zeile.startsWith("#"))
+				if (zeile.length() <= 1 || zeile.startsWith("#"))
 					continue;
 				split = PATTERN_EQUALSIGN.split(zeile, 2);
 				try
