@@ -25,6 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import de.st_ddt.crazyplugin.CrazyPluginInterface;
 import de.st_ddt.crazyutil.ChatHelper;
+import de.st_ddt.crazyutil.source.Localized;
 
 public class CrazyLocale extends HashMap<String, CrazyLocale> implements PersonalizedMessage
 {
@@ -120,6 +121,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 		return getUnit(unit).getLanguageText(language);
 	}
 
+	@Localized("LANGUAGE.NAME")
 	public static CrazyLocale getLanguageName()
 	{
 		return getLocaleHead().getSecureLanguageEntry("LANGUAGE.NAME");
