@@ -95,9 +95,9 @@ public class ChatHelper
 			else
 				System.out.println(stripColor(chatHeader + msg));
 		else if (error)
-			console.sendMessage(chatHeader + ChatColor.DARK_RED + msg);
+			console.sendMessage(chatHeader + ChatColor.DARK_RED + colorise(msg));
 		else
-			console.sendMessage(chatHeader + ChatColor.WHITE + msg);
+			console.sendMessage(chatHeader + ChatColor.WHITE + colorise(msg));
 	}
 
 	public static String getChatHeader(final Plugin plugin)
