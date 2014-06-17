@@ -202,7 +202,7 @@ public class CrazyLocale extends HashMap<String, CrazyLocale> implements Persona
 		if (split.length > 1)
 		{
 			final Collection<String> temp2 = languageAlternatives.get(split[1]);
-			if (temp != null)
+			if (temp2 != null)
 				res.addAll(temp2);
 		}
 		return res;
