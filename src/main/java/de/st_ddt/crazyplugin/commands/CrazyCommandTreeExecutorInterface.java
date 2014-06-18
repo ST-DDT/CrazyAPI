@@ -1,7 +1,7 @@
 package de.st_ddt.crazyplugin.commands;
 
 import java.util.Collection;
-import java.util.TreeMap;
+import java.util.SortedMap;
 
 import org.bukkit.command.CommandSender;
 
@@ -22,7 +22,7 @@ public interface CrazyCommandTreeExecutorInterface extends CrazyCommandExecutorI
 
 	public void setDefaultExecutor(CrazyCommandExecutorInterface defaultExecutor);
 
-	public TreeMap<String, CrazyCommandExecutorInterface> getSubExecutors();
+	public SortedMap<String, CrazyCommandExecutorInterface> getSubExecutors();
 
 	@Override
 	public void command(CommandSender sender, String[] args) throws CrazyException;
