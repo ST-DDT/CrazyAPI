@@ -7,7 +7,7 @@ import de.st_ddt.crazyutil.Showable;
 import de.st_ddt.crazyutil.locales.CrazyLocale;
 import de.st_ddt.crazyutil.source.Localized;
 
-public class CrazyException extends Exception implements Showable
+public class CrazyException extends RuntimeException implements Showable
 {
 
 	private static final long serialVersionUID = -1585496766103859503L;
