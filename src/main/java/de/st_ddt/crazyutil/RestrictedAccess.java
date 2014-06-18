@@ -2,6 +2,12 @@ package de.st_ddt.crazyutil;
 
 import org.bukkit.command.CommandSender;
 
+import de.st_ddt.crazyplugin.exceptions.CrazyCommandPermissionException;
+
+/**
+ * This object has access restrictions.<br>
+ * Any unauthorized access to it should throw a {@link CrazyCommandPermissionException}.
+ */
 public interface RestrictedAccess
 {
 
