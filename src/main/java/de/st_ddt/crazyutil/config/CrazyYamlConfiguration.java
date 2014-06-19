@@ -40,7 +40,12 @@ public class CrazyYamlConfiguration extends YamlConfiguration
 		}
 	}
 
-	private void createBackup(final File file, final Throwable e)
+	public static void createBackup(final File file)
+	{
+		createBackup(file, null);
+	}
+
+	private static void createBackup(final File file, final Throwable exception)
 	{
 		final String orgName = file.getName();
 		final File parentFile = file.getParentFile();
@@ -62,6 +67,8 @@ public class CrazyYamlConfiguration extends YamlConfiguration
 			System.err.println("Caused by " + t.getClass().getName() + ": " + t.getMessage());
 		}
 		// Error File
+		if (exception == null)
+			return;
 		final String errName = orgName.replace(".yml", "_" + time + ".yml.err");
 		final File errFile;
 		if (errName.equals(orgName))
@@ -70,7 +77,7 @@ public class CrazyYamlConfiguration extends YamlConfiguration
 			errFile = new File(parentFile, errName);
 		try (PrintWriter writer = new PrintWriter(errFile))
 		{
-			e.printStackTrace(writer);
+			exception.printStackTrace(writer);
 		}
 		catch (final Throwable t)
 		{
