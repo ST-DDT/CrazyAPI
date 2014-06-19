@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import de.st_ddt.crazyutil.ChatHeaderProvider;
 
 public class CrazyYamlConfiguration extends YamlConfiguration
 {
@@ -41,7 +44,7 @@ public class CrazyYamlConfiguration extends YamlConfiguration
 	{
 		final String orgName = file.getName();
 		final File parentFile = file.getParentFile();
-		final long time = System.currentTimeMillis();
+		final String time = ChatHeaderProvider.SHORTDATETIMEFORMAT.format(new Date());
 		// Backup File
 		final String bakName = orgName.replace(".yml", "_" + time + ".yml.bak");
 		final File bakFile;
