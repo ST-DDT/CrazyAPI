@@ -90,7 +90,7 @@ public class CrazyYamlConfiguration extends YamlConfiguration
 	@Override
 	public void save(final File file) throws IOException
 	{
-		file.mkdirs();
+		file.getParentFile().mkdirs();
 		super.save(file);
 	}
 }
